@@ -1,0 +1,20 @@
+upstream backend {
+    server filer:9999;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name localhost;
+
+  location / {
+    root /app;
+    index index.html index.htm;
+    try_files $uri $uri/ /index.html =404;
+  }
+
+  location /api/files {
+    proxy_pass http://backend/;
+    client_max_body_size 100M;
+  }
+}
